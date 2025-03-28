@@ -3,7 +3,4 @@
 
 #include <kernel/stdio.h>
 
-void initialize_gdt();
-void initialize_idt();
-
 #endif

@@ -1,12 +1,10 @@
 #ifndef _KERNEL_GDT_H
 #define _KERNEL_GDT_H
 
-#include <kernel/init.h> 
 #include <kernel/kprint.h>
 
 #define NUM_GDT_ENTRIES 5
 
-// Macros for dealing with segment flags
 #define SEG_DESCTYPE(x)  ((x) << 0x04)            // Descriptor type (0 for system, 1 for code/data)
 #define SEG_PRES(x)      ((x) << 0x07)            // Present
 #define SEG_SAVL(x)      ((x) << 0x0C)            // Available for system use
@@ -32,24 +30,30 @@
 #define SEG_CODE_EXRDC     0x0E                   // Execute/Read, conforming
 #define SEG_CODE_EXRDCA    0x0F                   // Execute/Read, conforming, accessed
  
-// Kernel code
 #define GDT_CODE_PL0 SEG_DESCTYPE(1) | SEG_PRES(1) | SEG_SAVL(0) | \
                      SEG_LONG(0)     | SEG_SIZE(1) | SEG_GRAN(1) | \
                      SEG_PRIV(0)     | SEG_CODE_EXRD
 
-// Kernel data
 #define GDT_DATA_PL0 SEG_DESCTYPE(1) | SEG_PRES(1) | SEG_SAVL(0) | \
                      SEG_LONG(0)     | SEG_SIZE(1) | SEG_GRAN(1) | \
                      SEG_PRIV(0)     | SEG_DATA_RDWR
 
-// User code
 #define GDT_CODE_PL3 SEG_DESCTYPE(1) | SEG_PRES(1) | SEG_SAVL(0) | \
                      SEG_LONG(0)     | SEG_SIZE(1) | SEG_GRAN(1) | \
                      SEG_PRIV(3)     | SEG_CODE_EXRD
 
-// User data
 #define GDT_DATA_PL3 SEG_DESCTYPE(1) | SEG_PRES(1) | SEG_SAVL(0) | \
                      SEG_LONG(0)     | SEG_SIZE(1) | SEG_GRAN(1) | \
                      SEG_PRIV(3)     | SEG_DATA_RDWR
+
+extern void gdt_flush(uint32_t);
+
+void gdt_init();
+
+typedef struct gdt_pointer
+{
+  uint16_t limit;
+  uint32_t base;
+} __attribute__ ((packed)) gdtr_t;
 
 #endif

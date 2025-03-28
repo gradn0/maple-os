@@ -1,18 +1,10 @@
 #include <kernel/gdt.h>
-#include <kernel/init.h> 
 #include <kernel/kprint.h>
 
-typedef struct gdt_pointer
-{
-  uint16_t limit;
-  uint32_t firstEntryAddr;
-} __attribute__ ((packed)) gdtr_t;
+static uint64_t gdt[NUM_GDT_ENTRIES];
+static gdtr_t gdtr;
 
-static uint64_t gdtEntries[NUM_GDT_ENTRIES];
-gdtr_t gdtr;
-
-uint64_t gdt_encode(uint32_t base, uint32_t limit, uint16_t flag)
-{
+static uint64_t gdt_create_entry(uint32_t base, uint32_t limit, uint16_t flag) {
     uint64_t gdt_entry;
  
     gdt_entry  =  limit       & 0x000F0000;
@@ -28,20 +20,18 @@ uint64_t gdt_encode(uint32_t base, uint32_t limit, uint16_t flag)
     return gdt_entry;
 }
 
-extern void FlushGDT(uint32_t);
-
-void initialize_gdt() {
+void gdt_init() {
 	gdtr.limit = (sizeof(uint64_t) * NUM_GDT_ENTRIES) - 1u;
-	gdtr.firstEntryAddr = (uint32_t)&gdtEntries;
+	gdtr.base = (uint32_t)&gdt;
 
     // Kernel segments
-	gdtEntries[0u] = gdt_encode(0, 0, 0);
-    gdtEntries[1u] = gdt_encode(0, 0x03FFFFFF, (GDT_CODE_PL0));
-    gdtEntries[2u] = gdt_encode(0, 0x03FFFFFF, (GDT_DATA_PL0)); 
+	gdt[0u] = gdt_create_entry(0, 0, 0);
+    gdt[1u] = gdt_create_entry(0, 0x03FFFFFF, (GDT_CODE_PL0));
+    gdt[2u] = gdt_create_entry(0, 0x03FFFFFF, (GDT_DATA_PL0)); 
 	
 	// User segments
-    gdtEntries[3u] = gdt_encode(0x04000000, 0x03FFFFFF, (GDT_CODE_PL3));
-    gdtEntries[4u] = gdt_encode(0x08000000, 0x03FFFFFF, (GDT_DATA_PL3));
+    gdt[3u] = gdt_create_entry(0x04000000, 0x03FFFFFF, (GDT_CODE_PL3));
+    gdt[4u] = gdt_create_entry(0x08000000, 0x03FFFFFF, (GDT_DATA_PL3));
 
 	gdt_flush((uint32_t)&gdtr);
 }
