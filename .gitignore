@@ -1,0 +1,6 @@
+isodir
+sysroot
+*.d
+*.o
+*.iso
+.vscode
