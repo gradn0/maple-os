@@ -29,9 +29,9 @@ static void pic_remap() {
 	outb(PRIMARY_DATA, 0x01);
 	outb(SECONDARY_DATA, 0x01);
 
-	// Mask all ports
-	outb(PRIMARY_DATA, 0xFD);
-	outb(SECONDARY_DATA, 0xFF);
+	// Unmask all ports
+	outb(PRIMARY_DATA, 0);
+	outb(SECONDARY_DATA, 0);
 }
 
 static void pic_send_eoi(uint8_t irq) {
