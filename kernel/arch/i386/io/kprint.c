@@ -16,8 +16,15 @@ void kerror(const char* str) {
 
 void kprint(const char* str) {
 	uint8_t prev_trm_color = terminal_getcolor();
-	terminal_setcolor(0xe,0x0);
+	terminal_setcolor(0,0x0);
 	printf(str);
 	printf("\n");
 	terminal_setcolor(prev_trm_color);
+}
+
+// Horrible - need to rewrite tty soon
+void klog(const char* str) {
+	printf("[INFO] ");
+  printf(str);
+  printf("\n");
 }

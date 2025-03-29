@@ -2,6 +2,7 @@
 #define _STDIO_H 1
 
 #include <sys/cdefs.h>
+#include <stddef.h>
 
 #define EOF (-1)
 
@@ -12,6 +13,7 @@ extern "C" {
 int printf(const char* __restrict, ...);
 int putchar(int);
 int puts(const char*);
+void scanf(char* buffer, size_t max_length);
 
 #ifdef __cplusplus
 }

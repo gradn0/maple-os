@@ -1,4 +1,5 @@
 #include <kernel/idt.h>
+#include <kernel/kbd.h>
 
 extern void* isr_stub_table[];
 
@@ -48,9 +49,8 @@ void exception_handler() {
 
 void irq_handler(uint8_t irq) {
   switch(irq) {
-    case 33: // Key press
-      uint8_t key = inb(0x60);
-      printf("Key press: %d\n", key);
+    case 33:
+      handle_keyboard_irq();
     default:
       break;
   }
@@ -59,6 +59,8 @@ void irq_handler(uint8_t irq) {
 }
 
 void idt_init() {
+  klog("Initialising Interrupts");
+
 	uint32_t idtr[2];
 	
   pic_remap();

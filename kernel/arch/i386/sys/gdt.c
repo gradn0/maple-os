@@ -21,6 +21,7 @@ static uint64_t gdt_create_entry(uint32_t base, uint32_t limit, uint16_t flag) {
 }
 
 void gdt_init() {
+  klog("Initialising GDT");
   gdtr.limit = (sizeof(uint64_t) * NUM_GDT_ENTRIES) - 1u;
   gdtr.base = (uint32_t)&gdt;
 
