@@ -67,10 +67,10 @@ void idt_init() {
 
   // Route stub table entries to the IDT
   for (uint8_t vector = 0; vector < 48; vector++) {
-    idt_set_entry(vector, isr_stub_table[vector]);
+    idt_set_entry(vector, (uint32_t)isr_stub_table[vector]);
   }
 	
-	uint32_t idt_addr = idt;
+	uint32_t idt_addr = (uint32_t)idt;
 	idtr[0] = (sizeof (idt_entry_t) * 256) + ((idt_addr & 0xffff) << 16);
 	idtr[1] = idt_addr >> 16;
 	

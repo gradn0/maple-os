@@ -2,6 +2,8 @@
 #define _KERNEL_IDT_H
 
 #include <stdint.h>
+#include <kernel/io.h>
+#include <kernel/kprint.h>
 
 #define IDT_MAX_DESCRIPTORS 256
 
@@ -16,7 +18,6 @@
 
 extern void idt_load();
 
-__attribute__((noreturn))
 void exception_handler();
 
 void idt_init();

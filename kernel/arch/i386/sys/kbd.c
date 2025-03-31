@@ -80,7 +80,7 @@ static uint8_t current_modifiers = 0;
 static key_event_t last_key_event = {0};
 
 static void update_modifiers(uint8_t scancode, bool is_released) {
-  for (size_t i = 0; i <= SUPPORTED_MODS; ++i) {
+  for (size_t i = 0; i < SUPPORTED_MODS; ++i) {
     if (mod_map[i].scancode == scancode) {
       if (mod_map[i].toggled) {
         if (!is_released) {
