@@ -25,8 +25,31 @@ void init_page_table() {
   write_cr3(page_directory);
   write_cr0(read_cr0() | 0x80000000); // flip bit 31 to enable paging
 
-  printf("[INFO] Page directory loaded at: 0x%#\n", page_directory);
-  if (read_cr0() & 0x80000000) {
-    klog("Successfully enabled paging\n");
+  if (verify_paging) {
+    klog("Successfully set up paging");
+  }
+}
+
+bool verify_paging() {
+  // Write to an address and read it back to verify contents
+  uint32_t* test_addr = (uint32_t*)0x1000;
+  *test_addr = 0xDEADBEEF;
+  
+  uint32_t read_value = *test_addr;
+  
+  if (read_value != 0xDEADBEEF) {
+    kerror("Paging: Failed basic memory access check");
+    return false;
+  }
+
+  // Verify CR0 bit and page directory address
+  if (!read_cr0() & 0x80000000) {
+    kerror("Paging: CR0 bit was not set");
+    return false;
+  }
+
+  if (!read_cr3() == (uint32_t)page_directory) {
+    kerror("Paging: CR3 does not point to a valid page directory");
+    return false;
   }
 }

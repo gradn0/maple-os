@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 #define PAGE_SIZE      0x1000     // 4 KiB page size
 #define TABLE_ENTRIES  1024
@@ -30,5 +31,6 @@ extern uint32_t read_cr3();
 extern void write_cr3(uint32_t page_directory);
 
 void init_page_table();
+bool verify_paging();
 
 #endif

@@ -1,3 +1,4 @@
+; IO helper functions
 global read_cr0
 read_cr0:
   mov eax, cr0

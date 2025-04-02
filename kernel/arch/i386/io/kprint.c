@@ -11,7 +11,7 @@ void panic(const char* str) {
 void kerror(const char* str) {
 	uint8_t prev_trm_color = terminal_getcolor();
 	terminal_setcolor(VGA_COLOR_LIGHT_CYAN);
-	printf("%s\n", str);
+	printf("[ERROR] %s\n", str);
 	terminal_setcolor(prev_trm_color);
 }
 
