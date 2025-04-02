@@ -60,7 +60,7 @@ isr_stub_table:
 %endrep
 
 ; ----------------------------------------
-; === Load IDT function ===
+; Load IDT function
 ; ----------------------------------------
 
 global idt_load

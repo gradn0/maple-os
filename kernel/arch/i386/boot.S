@@ -26,10 +26,12 @@ stack_top:
 _start:
 	movl $stack_top, %esp
 
-	# Call the global constructors.
-	call _init
+  # Call the global constructors.
+  # call _init
 
 	# Transfer control to the main kernel.
+  push %eax
+  push %ebx
 	call kernel_main
 
 	# Hang if kernel_main unexpectedly returns.
