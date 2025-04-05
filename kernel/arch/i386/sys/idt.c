@@ -1,6 +1,40 @@
 #include <kernel/idt.h>
 #include <kernel/kbd.h>
 
+#define KNOWN_EXCEPTIONS 28
+
+char* exception_map[KNOWN_EXCEPTIONS] = {
+  "Division Error",
+  "Debug",
+  "Non-maskable Interrupt",
+  "Breakpoint",
+  "Overflow",
+  "Bound Range Exceeded",
+  "Invalid Opcode",
+  "Device Not Available",
+  "Double Fault",
+  "Coprocessor Segment Overrun",
+  "Invalid TSS",
+  "Segment Not Present",
+  "Stack-Segment Fault",
+  "General Protection Fault",
+  "Page Fault",
+  "Reserved",
+  "x87 Floating-Point Exception",
+  "Alignment Check",
+  "Machine Check",
+  "SIMD Floating-Point Exception",
+  "Virtualization Exception",
+  "Control Protection Exception",
+  "Reserved",
+  "Hypervisor Injection Exception",
+  "VMM Communication Exception",
+  "Security Exception",
+  "Reserved"
+  "Triple Fault",
+  "FPU Error Interrupt",
+};
+
 extern void* isr_stub_table[];
 
 static idt_entry_t idt[IDT_MAX_DESCRIPTORS];
@@ -42,8 +76,21 @@ static void pic_send_eoi(uint8_t irq) {
   outb(PRIMARY_CTRL, PIC_EOI);
 }
 
-void exception_handler() {
-  printf("EXCEPTION\n");
+void exception_handler(uint32_t err_code) {
+  if (err_code <= KNOWN_EXCEPTIONS) {
+    printf("Exception: '%s'\n", exception_map[err_code]);
+  } else {
+    printf("Unknown exception code: %d\n", err_code);
+  }
+
+  switch(err_code) {
+    case 14:
+      handle_page_fault();
+      break;
+    default:
+      break;
+  }
+  
   __asm__ volatile ("cli; hlt");
 }
 

@@ -15,14 +15,18 @@ enum memory_type_e {
   MEMORY_BADRAM =                 5,
 };
 
+#define PHYS_TO_VIRT(addr) ((void *)((uintptr_t)(addr) + 0xC0000000))
+
 void print_memory(multiboot_info_t *mbi) {
-  multiboot_memory_map_t *mmap = mbi->mmap_addr;
-  for (uint8_t i = 0; i < 15; i++) {
-		printf(
-      "ADDR: 0x%#, SIZE: %d, LEN: %d, TYPE: 0x%#\n",
-      mmap[i].addr, mmap[i].size, mmap[i].len, mmap[i].type
+  printf("\nMEMORY MAP\n");
+
+  for (uint32_t offset = 0; offset < mbi->mmap_length; offset += sizeof(mmap_entry_32_t)) {
+    mmap_entry_32_t *entry = (mmap_entry_32_t *)PHYS_TO_VIRT(mbi->mmap_addr + offset);
+    printf(
+      "LOW ADDR: 0x%08x | LOW LEN: %#x | SIZE: %#x | TYPE: %d\n",
+      entry->addr_low, entry->len_low, entry->size, entry->type
     );
-	}
+  }
 }
 
 void kernel_main(void* mbi_addr, unsigned int magic) {
@@ -34,14 +38,12 @@ void kernel_main(void* mbi_addr, unsigned int magic) {
     kerror("GRUB: Unexpected magic number");
   }
 
-  printf("Bootloader: %s\n\n", (char *)mbi->boot_loader_name);
-
 	gdt_init();
 	idt_init();
 
-  init_page_table();
-
   printf("\nWelcome to Maple OS!\n");
+
+  print_memory(mbi);
 
   while(1) {
     char buffer[10];

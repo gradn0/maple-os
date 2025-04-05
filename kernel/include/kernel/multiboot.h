@@ -100,6 +100,15 @@ typedef unsigned short          multiboot_uint16_t;
 typedef unsigned int            multiboot_uint32_t;
 typedef unsigned long long      multiboot_uint64_t;
 
+typedef struct {
+  multiboot_uint32_t size;
+  multiboot_uint32_t addr_low;
+  multiboot_uint32_t addr_high;
+  multiboot_uint32_t len_low;
+  multiboot_uint32_t len_high;
+  multiboot_uint32_t type;
+} __attribute__((packed)) mmap_entry_32_t;
+
 struct multiboot_header
 {
   /* Must be MULTIBOOT_MAGIC - see above. */

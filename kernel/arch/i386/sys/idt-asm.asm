@@ -7,12 +7,16 @@ extern irq_handler
 
 %macro isr_err_stub 1
 isr_stub_%+%1:
+  ; error code automatically pushed
+  push long %1
   call exception_handler
   iret
 %endmacro
 
 %macro isr_no_err_stub 1
 isr_stub_%+%1:
+  push 0 ; push dummy error code
+  push $1
   call exception_handler
   iret
 %endmacro

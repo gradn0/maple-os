@@ -18,8 +18,7 @@
 
 extern void idt_load();
 
-void exception_handler();
-
+void exception_handler(uint32_t err_code);
 void idt_init();
 
 typedef struct {
